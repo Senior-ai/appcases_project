@@ -1,23 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import MainComp from './MainComp'
+import { useState } from 'react';
+import MissionsComp from './missionsComps/missionsComp';
 
 function App() {
+  const [showMissions, setShowMissions] = useState(false);
+  const [selectedId, setSelectedId] = useState('');
+  const onShowMissions = (id) => {
+    if (showMissions && selectedId === id)
+    {
+      setShowMissions(false);
+      setSelectedId(id);
+    }
+    else
+    {
+      if (selectedId === '')
+      {
+        setShowMissions(false)
+      }
+      else
+        setShowMissions(true); 
+      setSelectedId(id);
+    }
+  }
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <MainComp onShowMissions={onShowMissions}></MainComp>
+      {showMissions && <MissionsComp key={selectedId} id={selectedId} status={'todosList'} postStatus={'postsList'}/>}
     </div>
   );
 }
