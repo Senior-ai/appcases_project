@@ -1,6 +1,7 @@
 import {useState, useEffect} from 'react'
 import axios from 'axios';
 import DataComp from './DataComp';
+import userBLL from './BLL/userBLL'
 const tasksUrl = 'https://jsonplaceholder.typicode.com/todos'
 const usersUrl = 'https://jsonplaceholder.typicode.com/users'
 const UserComp = (props) => {
@@ -9,6 +10,7 @@ const UserComp = (props) => {
     const [email, setEmail] = useState('');
     const [showData, setShowData] = useState(false);
     const [showMissions, setShowMissions] = useState(false);
+    
   useEffect(() => {
     const fetchData = async() => {
         const {data} = await axios.get(`${tasksUrl}?userId=${props.user.id}&completed=false`);
@@ -22,6 +24,7 @@ const UserComp = (props) => {
   useEffect(() => {
     props.onShowMissions(props.user.id);
   }, [showMissions]);
+
   const onMouseLeave = () => {setShowData(false);}
   const onMouseOver = () => {setShowData(true);}
   const updateUser = async () => {
@@ -30,17 +33,13 @@ const UserComp = (props) => {
         name, email,
         address: props.user.address
     }
-    const {data} = await axios.put(`${usersUrl}/${props.user.id}`, obj)
-    console.log(data);
-  }
+    await userBLL.updateUser(props.user.id, obj)
+}
   
-  const deleteUser = async () => {
-    const resp = await axios.delete(`${usersUrl}/${props.user.id}`);
-    props.onDeleteUser(props.user.id);
-    console.log(resp);
-  } 
+  const deleteUser = async () => {props.onDeleteUser(props.user.id);}
+   
   return (
-    <div style={{marginBottom: '5px', padding: '5px', backgroundColor: showMissions? 'orange' : 'white',
+    <div style={{marginBottom: '5px', padding: '5px', backgroundColor: showMissions && props.user.id === props.selectedId? 'orange' : 'white',
     border: userTodos.length > 0? 'solid 2px red' : 'solid 2px green'}}>
         <div onClick={() => setShowMissions(!showMissions)} style={{textDecoration: 'blue underline', cursor: 'pointer'}}>
         ID: {props.user.id} <br/></div>
